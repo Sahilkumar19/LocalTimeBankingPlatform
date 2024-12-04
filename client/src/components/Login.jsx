@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import "../assets/css/login.css";
+import "../assets/css/login.css"
 
 axios.defaults.baseURL = 'http://localhost:3001';
 
@@ -13,7 +12,6 @@ const Login = () => {
     password: '',
   });
   const [error, setError] = useState('');
-  const navigate = useNavigate(); // Initialize navigate
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -27,19 +25,10 @@ const Login = () => {
         // Handle login
         const response = await axios.post('/api/users/login', formData);
         console.log('Logged in:', response.data);
-
-        // Store token or user data if needed
-        localStorage.setItem('token', response.data.token);
-
-        // Redirect to the dashboard
-        navigate('/dashboard'); // Adjust the path as needed
       } else {
         // Handle register
         const response = await axios.post('/api/users/register', formData);
         console.log('Registered:', response.data);
-
-        // Redirect to the login page after successful registration
-        navigate('/'); // Adjust the path as needed
       }
     } catch (err) {
       setError(err.response ? err.response.data.error : 'An error occurred');
