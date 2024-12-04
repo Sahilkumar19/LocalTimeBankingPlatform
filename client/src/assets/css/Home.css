@@ -1,0 +1,98 @@
+/* General Styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
+  }
+  
+  /* Container */
+  .home-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Title */
+  .home-title {
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #007bff;
+  }
+  
+  /* Search Bar */
+  .search-bar {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  /* Service List */
+  .service-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .service-item {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .service-item:last-child {
+    border-bottom: none;
+  }
+  
+  .service-link {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+  }
+  
+  .service-link:hover {
+    color: #007bff;
+  }
+  
+  /* Add Service Section */
+  .add-service-section {
+    margin-top: 30px;
+  }
+  
+  .input-field {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .add-service-btn {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  
+  .add-service-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Empty State */
+  .empty-state {
+    text-align: center;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+  }
+  
