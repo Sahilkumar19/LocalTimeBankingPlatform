@@ -91,21 +91,6 @@ const Home = () => {
 
       {/* Add Service Section */}
       <div className="add-service-section">
-        <h2>Add a New Service</h2>
-        <input
-          type="text"
-          className="input-field"
-          placeholder="Service title"
-          value={newService.title}
-          onChange={(e) => setNewService({ ...newService, title: e.target.value })}
-        />
-        <input
-          type="number"
-          className="input-field"
-          placeholder="Credits"
-          value={newService.credits}
-          onChange={(e) => setNewService({ ...newService, credits: e.target.value })}
-        />
         <button className="add-service-btn" onClick={addService}>Add Service</button>
       </div>
     </div>
