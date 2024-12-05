@@ -1,4 +1,3 @@
-/* General Styling */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -7,7 +6,6 @@ body {
     color: #333;
   }
   
-  /* Container */
   .home-container {
     padding: 20px;
     max-width: 800px;
@@ -17,7 +15,6 @@ body {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
   
-  /* Title */
   .home-title {
     font-size: 2rem;
     text-align: center;
@@ -25,7 +22,6 @@ body {
     color: #007bff;
   }
   
-  /* Search Bar */
   .search-bar {
     width: 100%;
     padding: 10px;
@@ -35,7 +31,6 @@ body {
     border-radius: 4px;
   }
   
-  /* Service List */
   .service-list {
     list-style-type: none;
     padding: 0;
@@ -60,7 +55,6 @@ body {
     color: #007bff;
   }
   
-  /* Add Service Section */
   .add-service-section {
     margin-top: 30px;
   }
@@ -87,7 +81,6 @@ body {
     background-color: #0056b3;
   }
   
-  /* Empty State */
   .empty-state {
     text-align: center;
     padding: 20px;

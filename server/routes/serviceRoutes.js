@@ -4,6 +4,7 @@ import { auth } from '../middleware/auth.js';
 
 const router = express.Router();
 
+router.get('/:id', getServices);
 router.get('/', getServices);
 router.post('/add', auth, createService);
 

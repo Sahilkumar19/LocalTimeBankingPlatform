@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
-import '../assets/css/Home.css'
+import '../assets/css/Home.css';
 
 const Home = () => {
   const [services, setServices] = useState([]);
@@ -9,6 +9,8 @@ const Home = () => {
   const [newService, setNewService] = useState({ title: '', credits: '' });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
+  const [limitedServices, setLimitedServices] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
 
   // Fetch services
   useEffect(() => {
@@ -16,6 +18,7 @@ const Home = () => {
       try {
         const response = await axios.get('http://localhost:3001/api/services');
         setServices(response.data);
+        setLimitedServices(response.data.slice(0, 5)); // Show only the first 5 services
       } catch (error) {
         console.error('Error fetching services:', error);
       }
@@ -34,15 +37,29 @@ const Home = () => {
     try {
       const response = await axios.post('http://localhost:3001/api/services', newService);
       setServices([...services, response.data]); // Update services list
+      setLimitedServices([...services, response.data].slice(0, 5)); // Update limited list
       setNewService({ title: '', credits: '' }); // Reset form
     } catch (error) {
       console.error('Error adding service:', error);
     }
   };
 
-  const filteredServices = services.filter(service =>
-    service.title.toLowerCase().includes(search.toLowerCase())
-  );
+  // Handle search
+  const handleSearch = async () => {
+    if (search.trim() === '') {
+      setIsSearching(false);
+      setLimitedServices(services.slice(0, 5)); // Reset to limited services
+      return;
+    }
+
+    setIsSearching(true);
+    try {
+      const response = await axios.get(`http://localhost:3001/api/services?search=${search}`);
+      setLimitedServices(response.data); // Show search results
+    } catch (error) {
+      console.error('Error fetching search results:', error);
+    }
+  };
 
   return (
     <div className="home-container">
@@ -55,7 +72,11 @@ const Home = () => {
         placeholder="Search services..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
+        onKeyPress={(e) => {
+          if (e.key === 'Enter') handleSearch();
+        }}
       />
+      <button className="search-btn" onClick={handleSearch}>Search</button>
       
       {/* Service List */}
       {services.length === 0 ? (
@@ -79,7 +100,7 @@ const Home = () => {
         </div>
       ) : (
         <ul className="service-list">
-          {filteredServices.map(service => (
+          {limitedServices.map(service => (
             <li key={service._id} className="service-item">
               <Link to={`/services/${service._id}`} className="service-link">
                 {service.title} - {service.credits} credits
@@ -90,11 +111,12 @@ const Home = () => {
       )}
 
       {/* Add Service Section */}
-      <div className="add-service-section">
-        <button className="add-service-btn" onClick={addService}>Add Service</button>
-      </div>
+      {!isSearching && (
+        <div className="add-service-section">
+          <button className="add-service-btn" onClick={addService}>Add Service</button>
+        </div>
+      )}
     </div>
   );
 };
-
 export default Home;
