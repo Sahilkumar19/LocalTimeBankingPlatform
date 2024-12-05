@@ -1,105 +1,122 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import "../assets/css/login.css";
+import { Link, useNavigate } from 'react-router-dom';
+import '../assets/css/Home.css';
 
-axios.defaults.baseURL = 'http://localhost:3001';
+const Home = () => {
+  const [services, setServices] = useState([]);
+  const [search, setSearch] = useState('');
+  const [newService, setNewService] = useState({ title: '', credits: '' });
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navigate = useNavigate();
+  const [limitedServices, setLimitedServices] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
 
-const Login = () => {
-  const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-  });
-  const [error, setError] = useState('');
-  const navigate = useNavigate(); // Initialize navigate
+  // Fetch services
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/api/services');
+        setServices(response.data);
+        setLimitedServices(response.data.slice(0, 5)); // Show only the first 5 services
+      } catch (error) {
+        console.error('Error fetching services:', error);
+      }
+    };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    fetchServices();
+  }, []);
+
+  // Add a new service
+  const addService = async () => {
+    if (!isAuthenticated) {
+      alert('You need to log in to add a service.');
+      navigate('/login');
+      return;
+    }
+    try {
+      const response = await axios.post('http://localhost:3001/api/services', newService);
+      setServices([...services, response.data]); // Update services list
+      setLimitedServices([...services, response.data].slice(0, 5)); // Update limited list
+      setNewService({ title: '', credits: '' }); // Reset form
+    } catch (error) {
+      console.error('Error adding service:', error);
+    }
   };
 
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
+  // Handle search
+  const handleSearch = async () => {
+    if (search.trim() === '') {
+      setIsSearching(false);
+      setLimitedServices(services.slice(0, 5)); // Reset to limited services
+      return;
+    }
+
+    setIsSearching(true);
     try {
-      if (isLogin) {
-        // Handle login
-        const response = await axios.post('/api/users/login', formData);
-        console.log('Logged in:', response.data);
-
-        // Store token or user data if needed
-        localStorage.setItem('token', response.data.token);
-
-        // Redirect to the dashboard
-        navigate('/dashboard'); // Adjust the path as needed
-      } else {
-        // Handle register
-        const response = await axios.post('/api/users/register', formData);
-        console.log('Registered:', response.data);
-
-        // Redirect to the login page after successful registration
-        navigate('/'); // Adjust the path as needed
-      }
-    } catch (err) {
-      setError(err.response ? err.response.data.error : 'An error occurred');
+      const response = await axios.get(`http://localhost:3001/api/services?search=${search}`);
+      setLimitedServices(response.data); // Show search results
+    } catch (error) {
+      console.error('Error fetching search results:', error);
     }
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-form">
-        <h2>{isLogin ? 'Login' : 'Register'}</h2>
-        {error && <div className="error">{error}</div>}
-        <form onSubmit={handleFormSubmit}>
-          {!isLogin && (
-            <div className="input-group">
-              <label htmlFor="name">Name</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required={!isLogin}
-              />
-            </div>
-          )}
-          <div className="input-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div className="input-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <button type="submit">{isLogin ? 'Login' : 'Register'}</button>
-        </form>
-        <div className="toggle-form">
-          <p>
-            {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}
-            <span onClick={() => setIsLogin(!isLogin)}>
-              {isLogin ? 'Register' : 'Login'}
-            </span>
-          </p>
+    <div className="home-container">
+      <h1 className="home-title">Available Services</h1>
+      
+      {/* Search Bar */}
+      <input
+        type="text"
+        className="search-bar"
+        placeholder="Search services..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        onKeyPress={(e) => {
+          if (e.key === 'Enter') handleSearch();
+        }}
+      />
+      <button className="search-btn" onClick={handleSearch}>Search</button>
+      
+      {/* Service List */}
+      {services.length === 0 ? (
+        <div className="empty-state">
+          <p>No services found. Add the first service below:</p>
+          <input
+            type="text"
+            className="input-field"
+            placeholder="Service title"
+            value={newService.title}
+            onChange={(e) => setNewService({ ...newService, title: e.target.value })}
+          />
+          <input
+            type="number"
+            className="input-field"
+            placeholder="Credits"
+            value={newService.credits}
+            onChange={(e) => setNewService({ ...newService, credits: e.target.value })}
+          />
+          <button className="add-service-btn" onClick={addService}>Add Service</button>
         </div>
-      </div>
+      ) : (
+        <ul className="service-list">
+          {limitedServices.map(service => (
+            <li key={service._id} className="service-item">
+              <Link to={`/services/${service._id}`} className="service-link">
+                {service.title} - {service.credits} credits
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {/* Add Service Section */}
+      {!isSearching && (
+        <div className="add-service-section">
+          <button className="add-service-btn" onClick={addService}>Add Service</button>
+        </div>
+      )}
     </div>
   );
 };
-
-export default Login;
+export default Home;
