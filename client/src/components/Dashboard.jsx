@@ -7,7 +7,12 @@ const Dashboard = () => {
   const [user, setUser] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [services, setServices] = useState([]);
-  const [newService, setNewService] = useState('');
+  const [newService, setNewService] = useState({
+    title: '',
+    description: '',
+    category: '',
+    credits: 0,
+  });
   const [error, setError] = useState('');
 
   // Fetch user, transactions, and services data
@@ -36,16 +41,23 @@ const Dashboard = () => {
   const handleAddService = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        'http://localhost:3001/api/services/add',
-        { title: newService },
-        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
-      );
+      const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` };
+      const response = await axios.post('http://localhost:3001/api/services/add', newService, { headers });
+
       setServices([...services, response.data]);
-      setNewService(''); // Clear the input field
+      setNewService({ title: '', description: '', category: '', credits: 0 }); // Reset the form fields
     } catch (error) {
       setError('Failed to add the service.');
     }
+  };
+
+  // Handle input changes for new service form
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewService((prev) => ({
+      ...prev,
+      [name]: name === 'credits' ? parseInt(value, 10) || 0 : value, // Parse credits as a number
+    }));
   };
 
   return (
@@ -61,15 +73,44 @@ const Dashboard = () => {
         <h2>Your Services</h2>
         <ul>
           {services.map((service) => (
-            <li key={service._id}>{service.title}</li>
+            <li key={service._id}>
+              <h3>{service.title}</h3>
+              <p>{service.description}</p>
+              <p>Category: {service.category}</p>
+              <p>Credits: {service.credits}</p>
+            </li>
           ))}
         </ul>
         <form onSubmit={handleAddService} className="add-service-form">
           <input
             type="text"
-            value={newService}
-            onChange={(e) => setNewService(e.target.value)}
-            placeholder="Add a new service"
+            name="title"
+            value={newService.title}
+            onChange={handleInputChange}
+            placeholder="Service Title"
+            required
+          />
+          <textarea
+            name="description"
+            value={newService.description}
+            onChange={handleInputChange}
+            placeholder="Service Description"
+            required
+          />
+          <input
+            type="text"
+            name="category"
+            value={newService.category}
+            onChange={handleInputChange}
+            placeholder="Service Category"
+            required
+          />
+          <input
+            type="number"
+            name="credits"
+            value={newService.credits}
+            onChange={handleInputChange}
+            placeholder="Credits"
             required
           />
           <button type="submit">Add Service</button>
