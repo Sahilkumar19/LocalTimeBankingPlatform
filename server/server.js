@@ -9,10 +9,21 @@ import transactionRoutes from './routes/transactionRoutes.js';
 dotenv.config();
 const app = express();
 
+// Dynamically allow multiple origins
+const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174'];
+
 app.use(cors({
-    origin: 'http://localhost:5174', // Allow requests from the frontend URL
-    credentials: true,              // Allow cookies if needed
-  }));
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true, // Allow cookies if needed
+}));
+
 app.use(express.json());
 
 connectDB();
@@ -22,9 +33,9 @@ app.use('/api/services', serviceRoutes);
 app.use('/api/transactions', transactionRoutes);
 
 app.get('/', (_req, res) => {
-    res.send('Server is running!');
-  });
-  
+  res.send('Server is running!');
+});
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
