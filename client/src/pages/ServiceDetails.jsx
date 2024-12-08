@@ -14,8 +14,6 @@ const ServiceDetails = () => {
     const fetchService = async () => {
       try {
         const response = await axios.get("http://localhost:3001/api/services");
-        // console.log("Fetched services:", response.data); // Log all fetched data
-        // console.log("URL ID:", id);
 
         // Iterate over the array to find the service with the matching `_id`
         const selectedService = response.data.find(service => service._id === id);
@@ -36,6 +34,10 @@ const ServiceDetails = () => {
     fetchService();
   }, [id]); // Dependency array ensures effect runs when `id` changes
 
+  const handleExchange = () => {
+    navigate(`/exchange/${id}`); // Redirect to exchange page for the specific service
+  };
+
   if (loading) return <div className="service-details-loading">Loading...</div>;
   if (error) return <div className="service-details-error">{error}</div>;
 
@@ -53,6 +55,9 @@ const ServiceDetails = () => {
             <p><strong>Credits:</strong> {service.credits || "N/A"}</p>
             <p><strong>Provided by:</strong> {service.userId || "N/A"}</p>
           </div>
+          <button onClick={() => navigate(`/exchange/${id}`)}>
+            Exchange Service
+          </button>
         </div>
       ) : (
         <div className="service-details-error">Service details not found.</div>

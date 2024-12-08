@@ -5,6 +5,7 @@ import Dashboard from './components/Dashboard';
 import AddService from './components/AddService';
 import Login from './pages/Login';
 import PrivateRoute from './components/PrivateRoute';
+import ExchangeService from './pages/ExchangeService';
 
 const App = () => {
   return (
@@ -12,6 +13,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/services/:id" element={<ServiceDetails />} />
+        <Route path="/exchange/:id" element={<ExchangeService />} />
         <Route
           path="/dashboard"
           element={

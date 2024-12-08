@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import '../assets/css/dashboard.css'; // Add a CSS file for better styling
+import '../assets/css/dashboard.css';
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -24,11 +24,11 @@ const Dashboard = () => {
         const userResponse = await axios.get('http://localhost:3001/api/users/me', { headers });
         setUser(userResponse.data);
 
-        const transactionResponse = await axios.get('http://localhost:3001/api/transactions', { headers });
-        setTransactions(transactionResponse.data);
+        // const transactionResponse = await axios.get('http://localhost:3001/api/transactions', { headers });
+        // setTransactions(transactionResponse.data);
 
-        const servicesResponse = await axios.get('http://localhost:3001/api/services/my-services', { headers });
-        setServices(servicesResponse.data);
+        // const servicesResponse = await axios.get('http://localhost:3001/api/services/my-services', { headers });
+        // setServices(servicesResponse.data);
       } catch (error) {
         setError('Failed to load data. Please try again later.');
       }
