@@ -16,7 +16,7 @@ const Home = () => {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/services');
+        const response = await axios.get('https://localtimebankingplatform-m2jh.onrender.com:3001/api/services');
         setServices(response.data);
         setLimitedServices(response.data.slice(0, 5)); // Show only the first 5 services
       } catch (error) {
@@ -35,7 +35,7 @@ const Home = () => {
       return;
     }
     try {
-      const response = await axios.post('http://localhost:3001/api/services', newService);
+      const response = await axios.post('https://localtimebankingplatform-m2jh.onrender.com:3001/api/services', newService);
       setServices([...services, response.data]); // Update services list
       setLimitedServices([...services, response.data].slice(0, 5)); // Update limited list
       setNewService({ title: '', credits: '' }); // Reset form
@@ -54,7 +54,7 @@ const Home = () => {
 
     setIsSearching(true);
     try {
-      const response = await axios.get(`http://localhost:3001/api/services?search=${search}`);
+      const response = await axios.get(`https://localtimebankingplatform-m2jh.onrender.com:3001/api/services?search=${search}`);
       setLimitedServices(response.data); // Show search results
     } catch (error) {
       console.error('Error fetching search results:', error);

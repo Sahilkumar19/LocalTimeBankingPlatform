@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import "../assets/css/login.css";
 
-axios.defaults.baseURL = 'http://localhost:3001';
+axios.defaults.baseURL = 'https://localtimebankingplatform-m2jh.onrender.com:3001';
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
