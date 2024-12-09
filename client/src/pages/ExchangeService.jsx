@@ -12,16 +12,20 @@ const ExchangeService = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
+  const [token, setToken] = useState(localStorage.getItem("token")); // Assuming token is stored in localStorage
 
   useEffect(() => {
     const fetchServices = async () => {
       try {
+        console.log("Fetching service with id:", id); // Log the service ID
         // Fetch the current service
         const response = await axios.get(`http://localhost:3001/api/services/${id}`);
+        console.log("Current Service:", response.data); // Log response to verify service data
         setService(response.data);
 
         // Fetch all available services for exchange
         const allServicesResponse = await axios.get("http://localhost:3001/api/services");
+        console.log("All Services:", allServicesResponse.data); // Log to verify list of services
         setAllServices(allServicesResponse.data.filter(s => s._id !== id)); // Exclude the current service
         setLoading(false);
       } catch (err) {
@@ -34,23 +38,40 @@ const ExchangeService = () => {
     fetchServices();
   }, [id]);
 
+  // Handle exchange submit
   const handleExchangeSubmit = async () => {
     if (!selectedService) {
       alert("Please select a service to exchange with.");
       return;
     }
 
+    if (!token) {
+      alert("You must be logged in to exchange services.");
+      navigate("/login"); // Redirect to login page if not authenticated
+      return;
+    }
+
     try {
-      // Call the API to process the exchange
-      await axios.post("http://localhost:3001/api/exchange", {
-        currentServiceId: id,
-        exchangeWithServiceId: selectedService,
-      });
+      // Call the API to process the exchange with token authentication
+      await axios.post(
+        "http://localhost:3001/api/exchange",
+        {
+          currentServiceId: id,
+          exchangeWithServiceId: selectedService,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,  // Ensure token is included
+          },
+        }
+      );
 
       setSuccessMessage("Exchange request submitted successfully!");
+      setError(null); // Clear previous error if exchange is successful
     } catch (err) {
       console.error("Error submitting exchange request:", err);
       setError("Failed to submit exchange request. Please try again.");
+      setSuccessMessage(""); // Clear success message if exchange failed
     }
   };
 
@@ -66,7 +87,7 @@ const ExchangeService = () => {
       {service && (
         <div className="current-service-card">
           <h2>Current Service</h2>
-          <p><strong>Title:</strong> {service.title}</p>
+          <p><strong>Title:</strong> {service.title || "No title available"}</p>
           <p><strong>Description:</strong> {service.description || "No description available"}</p>
         </div>
       )}

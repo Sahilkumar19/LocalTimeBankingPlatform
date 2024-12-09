@@ -9,34 +9,64 @@ const ServiceDetails = () => {
   const [service, setService] = useState(null); // State to hold the specific service
   const [loading, setLoading] = useState(true); // State to track loading status
   const [error, setError] = useState(null); // State to track errors
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Track authentication status
 
   useEffect(() => {
+    // Fetch service details
     const fetchService = async () => {
       try {
         const response = await axios.get("http://localhost:3001/api/services");
-
-        // Iterate over the array to find the service with the matching `_id`
         const selectedService = response.data.find(service => service._id === id);
 
         if (!selectedService) {
           throw new Error("Service not found");
         }
 
-        setService(selectedService); // Update state with the found service
-        setLoading(false); // Mark loading as complete
+        setService(selectedService);
       } catch (err) {
         console.error("Error fetching service details:", err);
         setError("Failed to load service details. Please try again later.");
-        setLoading(false); // Mark loading as complete
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // Check authentication status by verifying the token with the backend
+    const checkAuthStatus = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          setIsAuthenticated(false);
+          return;
+        }
+
+        // Validate the token with the backend
+        const authResponse = await axios.get("http://localhost:3001/api/auth/check", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setIsAuthenticated(authResponse.data.isAuthenticated); // Backend should return true/false
+      } catch (err) {
+        console.error("Error checking authentication status:", err);
+        setIsAuthenticated(false);
       }
     };
 
     fetchService();
-  }, [id]); // Dependency array ensures effect runs when `id` changes
+    checkAuthStatus();
+  }, [id]);
 
   const handleExchange = () => {
-    navigate(`/exchange/${id}`); // Redirect to exchange page for the specific service
+    if (!isAuthenticated) {
+      // Pass the intended redirect URL as a query parameter
+      navigate(`/login?redirectTo=/exchange/${id}`);
+    } else {
+      navigate(`/exchange/${id}`); // Redirect to exchange page
+    }
   };
+  
 
   if (loading) return <div className="service-details-loading">Loading...</div>;
   if (error) return <div className="service-details-error">{error}</div>;
@@ -55,7 +85,7 @@ const ServiceDetails = () => {
             <p><strong>Credits:</strong> {service.credits || "N/A"}</p>
             <p><strong>Provided by:</strong> {service.userId || "N/A"}</p>
           </div>
-          <button onClick={() => navigate(`/exchange/${id}`)}>
+          <button onClick={handleExchange}>
             Exchange Service
           </button>
         </div>

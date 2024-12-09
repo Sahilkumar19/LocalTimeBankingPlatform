@@ -5,6 +5,7 @@ import connectDB from './database/db.js';
 import userRoutes from './routes/userRoutes.js';
 import serviceRoutes from './routes/serviceRoutes.js';
 import transactionRoutes from './routes/transactionRoutes.js';
+import exchangeRoutes from './routes/exchangeRoutes.js';
 
 dotenv.config();
 const app = express();
@@ -31,6 +32,7 @@ connectDB();
 app.use('/api/users', userRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/transactions', transactionRoutes);
+app.use('/api/exchange', exchangeRoutes);
 
 app.get('/', (_req, res) => {
   res.send('Server is running!');

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import "../assets/css/login.css";
 
 axios.defaults.baseURL = 'http://localhost:3001';
@@ -14,6 +14,11 @@ const Login = () => {
   });
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Retrieve the redirectTo query parameter from the URL
+  const searchParams = new URLSearchParams(location.search);
+  const redirectTo = searchParams.get('redirectTo') || '/dashboard';
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -30,12 +35,13 @@ const Login = () => {
 
         localStorage.setItem('token', response.data.token);
 
-        navigate('/dashboard');
+        // Navigate to the `redirectTo` URL or default to dashboard
+        navigate(redirectTo);
       } else {
         const response = await axios.post('/api/users/register', formData);
         console.log('Registered:', response.data);
 
-        navigate('/'); 
+        navigate('/');
       }
     } catch (err) {
       setError(err.response ? err.response.data.error : 'An error occurred');
