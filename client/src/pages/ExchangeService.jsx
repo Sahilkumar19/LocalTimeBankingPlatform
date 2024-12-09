@@ -19,12 +19,12 @@ const ExchangeService = () => {
       try {
         console.log("Fetching service with id:", id); // Log the service ID
         // Fetch the current service
-        const response = await axios.get(`https://localtimebankingplatform-m2jh.onrender.com:3001/api/services/${id}`);
+        const response = await axios.get(`https://localtimebankingplatform-m2jh.onrender.com/api/services/${id}`);
         console.log("Current Service:", response.data); // Log response to verify service data
         setService(response.data);
 
         // Fetch all available services for exchange
-        const allServicesResponse = await axios.get("https://localtimebankingplatform-m2jh.onrender.com:3001/api/services");
+        const allServicesResponse = await axios.get("https://localtimebankingplatform-m2jh.onrender.com/api/services");
         console.log("All Services:", allServicesResponse.data); // Log to verify list of services
         const services = allServicesResponse.data;
 
@@ -62,7 +62,7 @@ const ExchangeService = () => {
     try {
       // Call the API to process the exchange with token authentication
       await axios.post(
-        "https://localtimebankingplatform-m2jh.onrender.com:3001/api/exchange",
+        "https://localtimebankingplatform-m2jh.onrender.com/api/exchange",
         {
             serviceId: id,
             targetServiceId: selectedService,
