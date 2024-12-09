@@ -10,7 +10,7 @@ const AddService = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post('https://localtimebankingplatform-m2jh.onrender.com:3001/api/services', {
+      const response = await axios.post('https://localtimebankingplatform-m2jh.onrender.com/api/services', {
         title,
         description,
         category,
