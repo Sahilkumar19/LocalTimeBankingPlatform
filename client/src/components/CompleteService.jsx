@@ -8,7 +8,7 @@ const CompleteService = ({ service }) => {
   const handleCompleteService = async () => {
     setIsProcessing(true);
     try {
-      const response = await axios.post('https://localtimebankingplatform-m2jh.onrender.com:3001/api/transactions', {
+      const response = await axios.post('https://localtimebankingplatform-m2jh.onrender.com/api/transactions', {
         serviceId: service._id,
         toUserId: service.userId,
         credits: service.credits,
