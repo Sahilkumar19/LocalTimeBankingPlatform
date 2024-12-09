@@ -21,7 +21,7 @@ const Dashboard = () => {
       try {
         const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` };
         
-        const userResponse = await axios.get('http://localhost:3001/api/users/me', { headers });
+        const userResponse = await axios.get('https://localtimebankingplatform-m2jh.onrender.com:3001/api/users/me', { headers });
         setUser(userResponse.data);
 
         // const transactionResponse = await axios.get('http://localhost:3001/api/transactions', { headers });
@@ -42,7 +42,7 @@ const Dashboard = () => {
     e.preventDefault();
     try {
       const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` };
-      const response = await axios.post('http://localhost:3001/api/services/add', newService, { headers });
+      const response = await axios.post('https://localtimebankingplatform-m2jh.onrender.com:3001/api/services/add', newService, { headers });
 
       setServices([...services, response.data]);
       setNewService({ title: '', description: '', category: '', credits: 0 }); // Reset the form fields

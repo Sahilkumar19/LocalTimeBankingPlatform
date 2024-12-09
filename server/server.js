@@ -11,7 +11,7 @@ dotenv.config();
 const app = express();
 
 // Dynamically allow multiple origins
-const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174'];
+const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174','https://serviceexchange.netlify.app'];
 
 app.use(cors({
   origin: (origin, callback) => {

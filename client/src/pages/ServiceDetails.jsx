@@ -15,7 +15,7 @@ const ServiceDetails = () => {
     // Fetch service details
     const fetchService = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/api/services");
+        const response = await axios.get("https://localtimebankingplatform-m2jh.onrender.com:3001/api/services");
         const selectedService = response.data.find(service => service._id === id);
 
         if (!selectedService) {
@@ -41,7 +41,7 @@ const ServiceDetails = () => {
         }
 
         // Validate the token with the backend
-        const authResponse = await axios.get("http://localhost:3001/api/auth/check", {
+        const authResponse = await axios.get("https://localtimebankingplatform-m2jh.onrender.com:3001/api/auth/check", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
