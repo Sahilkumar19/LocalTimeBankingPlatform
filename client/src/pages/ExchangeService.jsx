@@ -26,7 +26,15 @@ const ExchangeService = () => {
         // Fetch all available services for exchange
         const allServicesResponse = await axios.get("http://localhost:3001/api/services");
         console.log("All Services:", allServicesResponse.data); // Log to verify list of services
-        setAllServices(allServicesResponse.data.filter(s => s._id !== id)); // Exclude the current service
+        const services = allServicesResponse.data;
+
+        // Append the current service to the list for the dropdown
+        const updatedServices = [
+          response.data,
+          ...services.filter((s) => s._id !== id), // Exclude duplicate of current service
+        ];
+        setAllServices(updatedServices);
+
         setLoading(false);
       } catch (err) {
         console.error("Error fetching services:", err);
@@ -56,12 +64,12 @@ const ExchangeService = () => {
       await axios.post(
         "http://localhost:3001/api/exchange",
         {
-          currentServiceId: id,
-          exchangeWithServiceId: selectedService,
+            serviceId: id,
+            targetServiceId: selectedService,
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`,  // Ensure token is included
+            Authorization: `Bearer ${token}`, // Ensure token is included
           },
         }
       );
@@ -100,9 +108,9 @@ const ExchangeService = () => {
           className="exchange-select"
         >
           <option value="">-- Select a Service --</option>
-          {allServices.map(s => (
+          {allServices.map((s) => (
             <option key={s._id} value={s._id}>
-              {s.title}
+              {s._id === id ? `${s.title}` : s.title}
             </option>
           ))}
         </select>
